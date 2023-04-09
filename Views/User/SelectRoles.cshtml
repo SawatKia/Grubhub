@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to the website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1, p {
+            text-align: center;
+            color: #5F9EA0; /* blue color */
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+            .btn-group label {
+                display: inline-block;
+                padding: 10px 20px;
+                font-size: 16px;
+                font-weight: bold;
+                color: #fff;
+                background-color: #5F9EA0; /* blue color */
+                border-radius: 5px;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+            }
+
+                .btn-group label:hover {
+                    background-color: #0062cc; /* darker blue color */
+                }
+
+                .btn-group label input[type="radio"] {
+                    display: none;
+                }
+
+                .btn-group label.active {
+                    background-color: #0062cc; /* darker blue color */
+                }
+
+                    .btn-group label.active:hover {
+                        background-color: #005cbf; /* even darker blue color */
+                    }
+    </style>
+
+</head>
+<body>
+    <h1 class="text-lg-center text-primary">Welcome, @ViewBag.Username!</h1>
+    <h1 class="text-lg-center text-primary">Select your role, to continue</h1>
+    <p class="text-info bg-dark">don't worry you can change it later</p>
+
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary">
+            <input type="radio" name="options" id="option1" value="Grabber"> Grabber
+        </label>
+        <label class="btn btn-primary">
+            <input type="radio" name="options" id="option2" value="customer"> Customer
+        </label>
+    </div>
+</body>
+</html>
+
