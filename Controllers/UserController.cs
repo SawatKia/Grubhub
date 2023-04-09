@@ -14,14 +14,19 @@ namespace Grubhub.Controllers
         {
             _db = db;
         }
-        public IActionResult Index(string username)
-        {
-            ViewBag.Username = username;
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult index(User obj)
+        //public IActionResult Index(string username)
+        //{
+        //    ViewBag.Username = username;
+        //    return View();
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult index(User obj)
+        //{
+        //    ViewBag.Username = obj.Username;
+        //    return View();
+        //}
+        public IActionResult SelectRoles(User obj)
         {
             ViewBag.Username = obj.Username;
             return View();
@@ -32,6 +37,7 @@ namespace Grubhub.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //registion handler
         public IActionResult LoginRegis(User obj)
         {
             var existingUser = _db.UsersData.Any(u =>
@@ -52,6 +58,7 @@ namespace Grubhub.Controllers
                 TempData["RegisterationMessage"] = "The password and confirmation password do not match.";
                 return View();
             }
+            obj.Roles = "default";
             // hash the password using BCrypt
             //var salt = Bcrypt.GenerateSalt();
             //var passwordHash = Bcrypt.HashPassword(obj.Password, salt);
@@ -62,7 +69,7 @@ namespace Grubhub.Controllers
             _db.UsersData.Add(obj);
             _db.SaveChanges();
             // Pass the username to the Index action using a route parameter
-            return RedirectToAction("Index", new { username = obj.Username });
+            return RedirectToAction("SelectRoles", new { username = obj.Username });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -90,28 +97,8 @@ namespace Grubhub.Controllers
 
             // redirect to homepage or dashboard
             return RedirectToAction("index", "home");
-            //try
-            //{
-            //    User user = _db.UsersData.Single(u => u.Username == username && u.Password == password);
-
-            //    if (user.Password != password)
-            //    {
-            //        TempData["LoginMessage"] = "Invalid password.try again";
-            //        return View("LoginRegis");
-            //    }
-
-            //    // Authentication successful, store user ID in session or cookie
-            //    HttpContext.Session.SetString("UserId", user.Id.ToString());
-
-            //    // Redirect to homepage or dashboard
-            //    return RedirectToAction("Index", "Home");
-            //}
-            //catch (SqlNullValueException)
-            //{
-            //    TempData["LoginMessage"] = "Invalid username or password.";
-            //    return View("LoginRegis");
-            //}
         }
+        
 
 
     }
