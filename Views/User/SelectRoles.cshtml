@@ -1,13 +1,15 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Select Roles";
 }
+@model Grubhub.Models.User
 <!DOCTYPE html>
 <html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Chakra Petch">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Role</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Chakra+Petch">
     <style>
         body {
             background: linear-gradient(to right, hsl(135, 76%, 33%) 50%, #3fc2bb 50%);
@@ -15,22 +17,6 @@
             margin: 0;
             font-family: 'Chakra Petch', serif;
         }
-        h1 {
-          font-size: 36px;
-          font-weight: bold;
-          text-align: center;
-          color: #00FEB3;
-        }
-
-        h2 {
-          font-size: 24px;
-          font-weight: normal;
-          text-align: center;
-          margin-top: 10px;
-          margin-bottom: 20px;
-          color: #00FEB3;
-        }
-
 
         .button-container {
             display: flex;
@@ -106,14 +92,30 @@
             max-height: 100%;
         }
 
-        
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            color: #163c94; /* dark blue color */
+        }
+
+        /* Styling for the <h2> tags */
+        h2 {
+            font-size: 24px;
+            font-weight: normal;
+            text-align: center;
+            margin-top: 30px;
+            color: #163c94; /* dark blue color */
+        }
+
         
     </style>
 </head>
-<body>
-    <h1>Choose your role</h1>
-    <h2>Don't worry it can be changeable</h2>
 
+<body>
+    <h1>Welcome, @ViewBag.Username!! to Grubhub friend delivery</h1>
+    <h2>Please, select your want Roles</h2>
+    <h2>don't worry you can change it later</h2>
     <div class="button-container">
 
         <div class="button left-button" href="#">
@@ -129,4 +131,5 @@
     </div>
 
 </body>
+
 </html>
