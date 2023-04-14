@@ -113,11 +113,11 @@
 </head>
 
 <body>
-    <h1>Welcome, @ViewBag.Username!! your Id @Model.Id to Grubhub friend delivery</h1>
+    <h1>Welcome, @Model.Username!! your Id @Model.Id to Grubhub friend delivery</h1>
     <h2>Please, select your want Roles</h2>
     <h2>don't worry you can change it later</h2>
+
     <div class="button-container">
-        
         <form method="post" asp-controller="User" asp-action="SelectRoles">
             <input type="hidden" name="userId" value="@Model.Id" />
             <input type="hidden" name="username" value="@Model.Username" />
@@ -136,10 +136,7 @@
                 </button>
             </div>
         </form>
-
     </div>
-
-
 </body>
 
 </html>
