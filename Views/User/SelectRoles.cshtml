@@ -113,22 +113,32 @@
 </head>
 
 <body>
-    <h1>Welcome, @ViewBag.Username!! to Grubhub friend delivery</h1>
+    <h1>Welcome, @ViewBag.Username!! your Id @Model.Id to Grubhub friend delivery</h1>
     <h2>Please, select your want Roles</h2>
     <h2>don't worry you can change it later</h2>
     <div class="button-container">
+        
+        <form method="post" asp-controller="User" asp-action="SelectRoles">
+            <input type="hidden" name="userId" value="@Model.Id" />
+            <input type="hidden" name="username" value="@Model.Username" />
 
-        <div class="button left-button" href="#">
-            <img src="~/select_Role/rice-svgrepo-com.svg" class="icon"></img>
-            CUSTOMER
-        </div>
+            <div class="button left-button">
+                <button type="submit" name="selectedRole" value="Customer">
+                    <img src="~/select_Role/rice-svgrepo-com.svg" class="icon" />
+                    CUSTOMER
+                </button>
+            </div>
 
-        <div class="button right-button" href="#">
-            <img src="~/select_Role/electric-car-svgrepo-com.svg" class="icon"></img>
-            DRIVER
-        </div>
+            <div class="button right-button">
+                <button type="submit" name="selectedRole" value="Driver">
+                    <img src="~/select_Role/electric-car-svgrepo-com.svg" class="icon" />
+                    DRIVER
+                </button>
+            </div>
+        </form>
 
     </div>
+
 
 </body>
 
