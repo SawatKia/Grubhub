@@ -2,6 +2,7 @@
 using Grubhub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Grubhub.Controllers
 {
@@ -14,21 +15,10 @@ namespace Grubhub.Controllers
         {
             _db = db;
         }
-        //public IActionResult Index(string username)
-        //{
-        //    ViewBag.Username = username;
-        //    return View();
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult index(User obj)
-        //{
-        //    ViewBag.Username = obj.Username;
-        //    return View();
-        //}
-        public IActionResult SelectRoles(User obj)
+        public IActionResult Index(String username)
         {
-            ViewBag.Username = obj.Username;
+            ViewBag.Username = username;
+            
             return View();
         }
         public IActionResult LoginRegis()
@@ -40,6 +30,11 @@ namespace Grubhub.Controllers
         //registion handler
         public IActionResult LoginRegis(User obj)
         {
+            if (string.IsNullOrEmpty(obj.Username) || string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Password) || string.IsNullOrEmpty(obj.ConfirmPassword))
+            {
+                TempData["RegisterationMessage"] = "Please fill in all the required fields.";
+                return View();
+            }
             var existingUser = _db.UsersData.Any(u =>
                 (u.Username != null && u.Username.Equals(obj.Username)) ||
                 (u.Email != null && u.Email.Equals(obj.Email))
@@ -49,14 +44,14 @@ namespace Grubhub.Controllers
             {
                 //ModelState.AddModelError("RegisterUsername", "A user with the same username or email already exists.");
                 TempData["RegisterationMessage"] = "A user with the same username or email already exists.";
-                return View();
+                return View("LoginRegis", new { Panel = "right" });
             }
 
             if (obj.Password != obj.ConfirmPassword)
             {
                 //ModelState.AddModelError("RegisterPW", "The password and confirmation password do not match.");
                 TempData["RegisterationMessage"] = "The password and confirmation password do not match.";
-                return View();
+                return View("LoginRegis", new { Panel = "right" });
             }
             obj.Roles = "default";
             // hash the password using BCrypt
@@ -68,8 +63,12 @@ namespace Grubhub.Controllers
 
             _db.UsersData.Add(obj);
             _db.SaveChanges();
+
+            // Retrieve the user from the database
+            var user = _db.UsersData.SingleOrDefault(u => u.Username == obj.Username);
+
             // Pass the username to the Index action using a route parameter
-            return RedirectToAction("SelectRoles", new { username = obj.Username });
+            return RedirectToAction("SelectRoles", new { user = user }) ;
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -92,13 +91,43 @@ namespace Grubhub.Controllers
                 return View("loginregis");
             }
 
+            // region set session value
             // authentication successful, store user id in session or cookie
             HttpContext.Session.SetString("userid", user.Id.ToString());
-
-            // redirect to homepage or dashboard
-            return RedirectToAction("index", "home");
+            // end region
+            if (user.Roles != "default")
+            {
+                // redirect to homepage or dashboard
+                return RedirectToAction("index", new { username = username });
+            }
+            else//if user role == deafault then goto selectroles
+            {
+                return RedirectToAction("SelectRoles", "User", new { user = user });
+            }
         }
-        
+        public IActionResult SelectRoles(User user)
+        {
+            ViewBag.Username = user.Username;
+            return View(user);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectRoles(string role)
+        {
+            var user = await _db.UsersData.SingleOrDefaultAsync(u => u.Username == User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user.Roles = role;
+            _db.UsersData.Update(user);
+            _db.SaveChanges();
+            
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
 
 
     }
