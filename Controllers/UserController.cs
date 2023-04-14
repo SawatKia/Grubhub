@@ -15,9 +15,11 @@ namespace Grubhub.Controllers
         {
             _db = db;
         }
-        public IActionResult Index(String username)
+        public IActionResult Index(User user)
         {
-            ViewBag.Username = username;
+            ViewBag.Username = user.Username;
+            ViewBag.Id = user.Id;
+            ViewBag.Roles = user.Roles;
             
             return View();
         }
@@ -68,7 +70,7 @@ namespace Grubhub.Controllers
             var user = _db.UsersData.SingleOrDefault(u => u.Username == obj.Username);
 
             // Pass the username to the Index action using a route parameter
-            return RedirectToAction("SelectRoles", new { user = user }) ;
+            return RedirectToAction("SelectRoles", user) ;
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -98,33 +100,43 @@ namespace Grubhub.Controllers
             if (user.Roles != "default")
             {
                 // redirect to homepage or dashboard
-                return RedirectToAction("index", new { username = username });
+                return RedirectToAction("index", user);
             }
             else//if user role == deafault then goto selectroles
             {
-                return RedirectToAction("SelectRoles", "User", new { user = user });
+                ViewBag.Username = user.Username;
+                return RedirectToAction("SelectRoles", "User", user);
             }
         }
         public IActionResult SelectRoles(User user)
-        {
+        { 
+            if (user == null)
+            {
+                // Handle the case where the user object is null
+                return RedirectToAction("Login", "User");
+            }
             ViewBag.Username = user.Username;
             return View(user);
         }
         [HttpPost]
-        public async Task<IActionResult> SelectRoles(string role)
+        public IActionResult SelectRoles()
         {
-            var user = await _db.UsersData.SingleOrDefaultAsync(u => u.Username == User.Identity.Name);
+            int userId = int.Parse(Request.Form["userId"]);
+            string username = Request.Form["username"];
+            string selectedRole = Request.Form["selectedRole"];
+
+            var user = _db.UsersData.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
                 return NotFound();
             }
-            user.Roles = role;
+            user.Roles = selectedRole;
             _db.UsersData.Update(user);
             _db.SaveChanges();
-            
+            user = _db.UsersData.FirstOrDefault(u => u.Id == userId);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "User", user);
         }
 
 
