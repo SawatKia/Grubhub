@@ -1,0 +1,106 @@
+﻿@using Grubhub.Controllers;
+@model UserPostsViewModel
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/64d58efce2.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="#" rel="stylesheet" />
+    <style>
+        .post-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+            .post-card h2 {
+                font-size: 24px;
+                margin: 0 0 10px;
+            }
+
+            .post-card p {
+                font-size: 16px;
+                margin: 0;
+            }
+
+            .post-card .btn {
+                display: block;
+                margin-top: 10px;
+            }
+
+    </style>
+    
+    <title>Grabber Home</title>
+</head>
+<body>
+    <form method="POST" asp-action="Logout" asp-controller="Grabber">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+
+    <div class="post-cards">
+        <div class="card-container">
+            <button id="post-button">Create Post</button>
+            <div id="post-form" style="display: none;">
+                <form method="POST" asp-action="Index" asp-controller="Grabber" class="needs-validation">
+                    <div class="mb-3">
+                        <label for="CanteenName" class="form-label">Canteen Name:</label>
+                        <select id="CanteenName" name="CanteenName" required class="form-select">
+                            <option value="">-- Select canteen --</option>
+                            <option value="โรงอาหารพระเทพ">โรงอาหารพระเทพ</option>
+                            <option value="โรง A">โรง A</option>
+                            <option value="โรง C">โรง C</option>
+                            <option value="โรง J">โรง J</option>
+                            <option value="โรงอาหารคณะวิทย์">โรงอาหารคณะวิทย์</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="MaxQuantity" class="form-label">Max Quantity:</label>
+                        <input type="number" id="MaxQuantity" name="MaxQuantity" required min="1" step="1" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="MaxPrice" class="form-label">Max Price:</label>
+                        <input type="number" id="MaxPrice" name="MaxPrice" required min="1" step="any" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="CloseTime" class="form-label">Close Time:</label>
+                        <input type="datetime-local" id="CloseTime" name="CloseTime" class="form-control">
+                        <div class="form-check">
+                            <input type="checkbox" id="CloseOption" name="CloseOption" class="form-check-input">
+                            <label for="CloseOption" class="form-check-label">Close by Manually</label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="UserId" name="UserId" value="@Model.User.Id" />
+                    <button type="submit" class="btn btn-primary">Submit the Post</button>
+                </form>
+            </div>
+            @foreach (var post in Model.Posts)
+            {
+                <div class="card">
+                    <!--<div class="card-header">@post.PostId</div>-->
+                    <div class="card-body">
+                        <p>Canteen Name: @post.CanteenName</p>
+                        <p>Max Quantity: @post.MaxQuantity</p>
+                        <p>Max Price: @post.MaxPrice</p>
+                        <p>Close Time: @(post.CloseTime == DateTime.MaxValue ? "Close manually" : post.CloseTime.ToString())</p>
+                    </div>
+                </div>
+                <hr />
+            }
+        </div>
+        
+    </div>
+
+    
+    <script src="~/grabber/js/grabber-post-form.js"></script>
+</body>
+</html>
+
+
+

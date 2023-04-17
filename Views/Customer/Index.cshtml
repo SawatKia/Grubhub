@@ -1,0 +1,49 @@
+﻿
+@using Grubhub.Controllers;
+@model UserPostsViewModel
+
+<h1>Index</h1>
+<h1>Hello @Model.User.Id:@Model.User.Username</h1>
+@foreach (var post in Model.Posts)
+{
+    <div class="card">
+        <!--<div class="card-header">@post.PostId</div>-->
+        <div class="card-body">
+            <p>Canteen Name: @post.CanteenName</p>
+            <p>Max Quantity: @post.MaxQuantity</p>
+            <p>Max Price: @post.MaxPrice</p>
+            <p>Close Time: @(post.CloseTime == DateTime.MaxValue ? "Close manually" : post.CloseTime.ToString())</p>
+            <button onclick="toggleForm('@post.PostId')">Request an Order</button>
+            <p></p>
+            <div id="order-form-@post.PostId" style="display: none;">
+                <form method="post" action="@Url.Action("CreateOrder", "Orders")">
+                    <input type="hidden" name="UserId" value="@Model.User.Id" />
+                    <input type="hidden" name="PostId" value="@post.PostId" />
+                    <div class="form-group">
+                        <label for="foodName-@post.PostId">Food Name:</label>
+                        <input type="text" name="foodName" id="foodName-@post.PostId" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="numBoxes-@post.PostId">Number of Boxes:</label>
+                        <input type="number" name="numBoxes" id="numBoxes-@post.PostId" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="totalPrice-@post.PostId">Total Price:</label>
+                        <input type="number" name="totalPrice" id="totalPrice-@post.PostId" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="pickupPlace-@post.PostId">Pickup Place:</label>
+                        <input type="text" name="pickupPlace" id="pickupPlace-@post.PostId" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="notes-@post.PostId">Note:</label>
+                        <textarea name="notes" id="notes-@post.PostId" class="form-control"></textarea>
+                    </div>
+                    <button type="submit">Send Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr />
+}
+<script src="~/customer/customer-form.js"></script>
