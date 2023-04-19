@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace Grubhub.Models
 {
@@ -33,6 +33,6 @@ namespace Grubhub.Models
         [AllowNull]
         public string Roles { get; set; } //Admin, Grabber, Customer
 
-        
+
     }
 }

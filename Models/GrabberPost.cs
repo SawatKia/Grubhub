@@ -8,6 +8,7 @@ namespace Grubhub.Models
         [Key]
         public int PostId { get; set; }
         public int UserId { get; set; }
+        public string GrabberName { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime Date_Created { get; set; } = DateTime.Now;
@@ -22,7 +23,7 @@ namespace Grubhub.Models
 
         [Required]
         [Range(1, double.MaxValue)]
-        public double MaxPrice { get; set; }
+        public double MaxTotalPrice { get; set; }
 
         [Required]
         [AllowNull]
