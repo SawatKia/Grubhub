@@ -14,6 +14,14 @@ sign_in_btn.addEventListener("click", () => {
 function validatePassword(event) {
     var password = document.querySelector("#password");
     var confirmPassword = document.querySelector("#confirm-password");
+    var username = document.querySelector('input[name="Username"]');
+    var email = document.querySelector('input[name="Email"]');
+
+    if (username.value === '' || email.value === '' || password.value === '' || confirmPassword.value === '') {
+        alert("Please fill in all the fields!");
+        event.preventDefault();
+        return false;
+    }
     if (password.value != confirmPassword.value) {
         alert("Passwords do not match!");
         event.preventDefault();
