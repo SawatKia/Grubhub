@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/64d58efce2.js"
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	<link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/loginregis/css/style.css" rel="stylesheet" />
     <title>Sign in & Sign up Form</title>
 </head>
 <body>
@@ -21,11 +21,11 @@
                     <h2 class="title">Sign in</h2>
                     <div class="input-field">
                         <i class="fas fa-user"></i>
-                        <input type="text"  name="username" placeholder="Username" />
+                        <input type="text" name="username" placeholder="Username" required />
                     </div>
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
-                        <input type="password" name="password" placeholder="Password" >
+                        <input type="password" name="password" placeholder="Password" required>
                     </div>
                     <input type="submit" value="Login" class="btn solid" />
                     @if (TempData["LoginMessage"] != null)
@@ -34,26 +34,28 @@
                     }
                 </form>
                 <!--@Html.ValidationSummary()-->
-                <form method="post" asp-controller="User" class="sign-up-form" asp-action="LoginRegis">
+                <form method="post" asp-controller="User" id="sign-up" class="sign-up-form" asp-action="LoginRegis">
                     <h2 class="title">Sign up</h2>
                     <div class="input-field">
                         <i class="fas fa-user"></i>
-                        <input type="text" name="Username" placeholder="Username" asp-for="Username"/>
+                        <input type="text" name="Username" placeholder="Username" required autofocus/>
                     </div>
                     <div class="input-field">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" name="Email"placeholder="Email" asp-for="Email"/>
+                        <input type="email" name="Email" placeholder="Email" required />
                     </div>
                     
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="Password" asp-for="Password" id="password"/>
+                        <input type="password" placeholder="Password" name="password" id="password" required />
                     </div>
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="Confirm-Password" asp-for="ConfirmPassword" id="confirm-password" />
+                        <input type="password" placeholder="Confirm-Password" name="confirmpassword" id="confirm-password" required />
                     </div>
-                    <input type="submit" class="btn" value="Sign up" onclick="validatePassword(event)" />
+                    <a href="#sign-up"><input type="submit" class="btn" value="Sign up" onclick="validatePassword(event)" /></a>
+                    
+                    
                     @if (TempData["RegisterationMessage"] != null)
                     {
                         <div style="color:red;">
@@ -76,7 +78,7 @@
                         Sign up
                     </button>
                 </div>
-               <img src="~/img/food3.svg" class="image" alt="" />
+                <img src="~/loginregis/img/food3.svg" class="image" alt="" />
             </div>
             <div class="panel right-panel">
                 <div class="content">
@@ -88,12 +90,12 @@
                         Sign in
                     </button>
                 </div>
-                <img src="~/img/login2.svg" class="image" alt="" />
+                <img src="~/loginregis/img/login2.svg" class="image" alt="" />
             </div>
         </div>
     </div>
 
-	<script src="~/js/app.js"></script>
+    <script src="~/loginregis/js/app.js"></script>
 </body>
 </html>
 

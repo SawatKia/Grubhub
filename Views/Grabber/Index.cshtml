@@ -36,6 +36,8 @@
             }
 
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     
     <title>Grabber Home</title>
 </head>
@@ -43,7 +45,7 @@
     <form method="POST" asp-action="Logout" asp-controller="Grabber">
         <button type="submit" class="btn btn-danger">Logout</button>
     </form>
-
+    <h1 class="text-xl-center">Grabber Home</h1> 
     <div class="post-cards">
         <div class="card-container">
             <button id="post-button">Create Post</button>
@@ -65,33 +67,63 @@
                         <input type="number" id="MaxQuantity" name="MaxQuantity" required min="1" step="1" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label for="MaxPrice" class="form-label">Max Price:</label>
-                        <input type="number" id="MaxPrice" name="MaxPrice" required min="1" step="any" class="form-control">
+                        <label for="MaxPrice" class="form-label">Max Price(Total):</label>
+                        <input type="number" id="MaxTotalPrice" name="MaxTotalPrice" required min="1" step="any" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label for="CloseTime" class="form-label">Close Time:</label>
                         <input type="datetime-local" id="CloseTime" name="CloseTime" class="form-control">
                         <div class="form-check">
-                            <input type="checkbox" id="CloseOption" name="CloseOption" class="form-check-input">
+                            <input type="checkbox" id="CloseOption" name="CloseOption" class="form-check-input" checked>
                             <label for="CloseOption" class="form-check-label">Close by Manually</label>
                         </div>
                     </div>
                     <input type="hidden" id="UserId" name="UserId" value="@Model.User.Id" />
+                    <input type="hidden" id="GrabberName" name="GrabberName" value="@Model.User.Username"/>
                     <button type="submit" class="btn btn-primary">Submit the Post</button>
+                    
                 </form>
+                
             </div>
+            @if (TempData["Posting_Error"] != null)
+            {
+                <div style="color:red;">@TempData["Posting_Error"]</div>
+            }
             @foreach (var post in Model.Posts)
             {
                 <div class="card">
-                    <!--<div class="card-header">@post.PostId</div>-->
+                    <form method="post" asp-action="deletePost" asp-controller="Grabber">
+                        <input type="hidden" name="postId" value="@post.PostId" />
+                        <button id="delete" name="delete button" type="submit" onclick="return confirm('Are you sure you want to delete this post?');">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                    </form>
                     <div class="card-body">
                         <p>Canteen Name: @post.CanteenName</p>
                         <p>Max Quantity: @post.MaxQuantity</p>
-                        <p>Max Price: @post.MaxPrice</p>
+                        <p>Max Price: @post.MaxTotalPrice</p>
                         <p>Close Time: @(post.CloseTime == DateTime.MaxValue ? "Close manually" : post.CloseTime.ToString())</p>
                     </div>
+                    @foreach (var order in Model.CustomerOrders)
+                    {
+                        @if (order.PostId == post.PostId)
+                        {
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>Food Name: @order.FoodName</p>
+                                    <p>Number of Boxes: @order.NumBoxes</p>
+                                    <p>Estimated Total Price: @order.EstimatedTotalPrice</p>
+                                    <p>Pickup Place: @order.PickupPlace</p>
+                                    @if (!string.IsNullOrEmpty(order.Notes))
+                                    {
+                                        <p>Notes: @order.Notes</p>
+                                    }
+                                    <hr />
+                                </div>
+                            </div>
+                        }
+                    }
                 </div>
-                <hr />
             }
         </div>
         
