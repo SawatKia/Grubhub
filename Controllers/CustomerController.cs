@@ -28,12 +28,51 @@ namespace Grubhub.Controllers
             _db.GrabberPostingField.RemoveRange(postsToRemove);
             _db.SaveChanges();
             var posts = _db.GrabberPostingField.ToList();
+            var user_order = _db.CustomerOrders.ToList();
             var viewModel = new UserPostsViewModel
             {
+                CustomerOrders = user_order,
                 User = user_obj,
                 Posts = posts
             };
             return View(viewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index(CustomerOrder order)
+        {
+            var post = _db.GrabberPostingField.FirstOrDefault(p => p.PostId == order.PostId);
+
+            if (order.NumBoxes > post.MaxQuantity)
+            {
+                ModelState.AddModelError("NumBoxes", "Number of boxes cannot exceed " + post.MaxQuantity + ".");
+            }
+
+            if (order.EstimatedTotalPrice > Convert.ToDecimal(post.MaxTotalPrice))
+            {
+                ModelState.AddModelError("EstimatedTotalPrice", "Estimated total price cannot exceed " + post.MaxTotalPrice + ".");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var posts = _db.GrabberPostingField.ToList();
+                var user_order = _db.CustomerOrders.ToList();
+                var user_obj = _db.UsersData.FirstOrDefault(o => o.Id == order.CustomerId);
+
+                var viewModel = new UserPostsViewModel
+                {
+                    CustomerOrders = user_order,
+                    User = user_obj,
+                    Posts = posts
+                };
+                // Validation failed, return the same view with validation errors
+                return View(viewModel);
+            }
+            _db.CustomerOrders.Add(order);
+            _db.SaveChanges();
+            //show comment
+            
+            return RedirectToAction("Index");
         }
     }
 }

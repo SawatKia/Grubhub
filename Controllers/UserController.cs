@@ -2,7 +2,6 @@
 using Grubhub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 
 namespace Grubhub.Controllers
 {
@@ -20,7 +19,6 @@ namespace Grubhub.Controllers
             ViewBag.Username = user.Username;
             ViewBag.Id = user.Id;
             ViewBag.Roles = user.Roles;
-            
             return View();
         }
         public IActionResult LoginRegis()
@@ -97,15 +95,23 @@ namespace Grubhub.Controllers
             // authentication successful, store user id in session or cookie
             HttpContext.Session.SetString("userid", user.Id.ToString());
             // end region
-            if (user.Roles != "default")
-            {
-                // redirect to homepage or dashboard
-                return RedirectToAction("index", user);
-            }
-            else//if user role == deafault then goto selectroles
+            
+            if (user.Roles == "default")//if user role == deafault then goto selectroles
             {
                 ViewBag.Username = user.Username;
                 return RedirectToAction("SelectRoles", "User", user);
+            }
+            else if(user.Roles == "Grabber")
+            {
+                return RedirectToAction("Index", "Grabber", user);
+            }
+            else if(user.Roles == "Admin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            else
+            {
+                return RedirectToAction("index", "Customer", user);
             }
         }
         public IActionResult SelectRoles(User user)
@@ -136,11 +142,24 @@ namespace Grubhub.Controllers
             _db.SaveChanges();
             user = _db.UsersData.FirstOrDefault(u => u.Id == userId);
 
-            return RedirectToAction("Index", "User", user);
+            //return RedirectToAction("Index", "User", user);
+            if (user.Roles == "default")//if user role == deafault then goto selectroles
+            {
+                ViewBag.Username = user.Username;
+                return RedirectToAction("SelectRoles", "User", user);
+            }
+            else if (user.Roles == "Grabber")
+            {
+                return RedirectToAction("Index", "Grabber");
+            }
+            else if (user.Roles == "Admin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            else
+            {
+                return RedirectToAction("index", "Customer");
+            }
         }
-
-
-
-
     }
 }

@@ -7,5 +7,6 @@ namespace Grubhub.Controllers
     {
         public User User { get; set; }
         public List<GrabberPost> Posts { get; set; }
+        public List<CustomerOrder> CustomerOrders { get; set; }
     }
 }
