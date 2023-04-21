@@ -74,6 +74,7 @@ namespace Grubhub.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(string username, string password)
         {
+            
             bool isvaliduser = _db.UsersData.Any(u => u.Username == username && u.Password == password);
 
             if (!isvaliduser)

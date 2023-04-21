@@ -30,8 +30,9 @@ namespace Grubhub.Controllers
 				User = user,
 				Posts = posts
 			};
+            ViewData["Controller"] = user.Roles;
 
-			return View(viewModel);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -43,6 +44,7 @@ namespace Grubhub.Controllers
                 .Where(p => p.UserId == obj.UserId)
                 .ToList();
             User userData = _db.UsersData.FirstOrDefault(u => u.Id == obj.UserId);
+            ViewData["Controller"] = userData.Roles;
             var viewModel = new UserPostsViewModel
             {
                 CustomerOrders =  user_order,
@@ -83,19 +85,46 @@ namespace Grubhub.Controllers
         [HttpPost]
         public IActionResult deletePost(int postID)
         {
-            var postToDelete = _db.GrabberPostingField.FirstOrDefault(p => p.PostId == postID);
-            if (postToDelete != null)
+            var postsToDelete = _db.GrabberPostingField.Where(p => p.PostId == postID);
+            var orderToDelete = _db.CustomerOrders.Where(o => o.PostId == postID);
+            foreach (var order in orderToDelete)
             {
-                var orderToDelete = _db.CustomerOrders.FirstOrDefault(o => o.PostId == postID);
-                if (orderToDelete != null)
-                {
-                    _db.CustomerOrders.Remove(orderToDelete);
-                }
-                _db.GrabberPostingField.Remove(postToDelete);
-                _db.SaveChanges();
+                _db.CustomerOrders.Remove(order);
             }
+            foreach (var post in postsToDelete)
+            {
+                _db.GrabberPostingField.Remove(post);
+            }
+            _db.SaveChanges();
+            
             var posts = _db.GrabberPostingField.ToList();
             return RedirectToAction("Index", "Grabber", posts);
+        }
+        [HttpGet]
+        public IActionResult Profile(int Id)
+        {
+            
+            User userData = _db.UsersData.FirstOrDefault(u => u.Id == Id); // Replace userId with the actual ID of the logged in user
+            if (userData == null)
+            {
+                return NotFound();
+            }
+            ViewData["Controller"] = userData.Roles;
+            return View(userData);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Profile(User Updateduser)
+        {
+            User existingUser = _db.UsersData.FirstOrDefault(u => u.Id == Updateduser.Id); // Get the existing user from the database
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+            existingUser.Roles = Updateduser.Roles; // Update the roles
+            _db.SaveChanges(); // Save changes to the database
+            ViewData["Controller"] = existingUser.Roles;
+            return RedirectToAction("Index", existingUser.Roles, existingUser); // Redirect to the profile page
         }
     }
 
