@@ -42,10 +42,36 @@
     <title>Grabber Home</title>
 </head>
 <body>
-    <form method="POST" asp-action="Logout" asp-controller="Grabber">
-        <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", Model.User.Roles, Model.User)">
+                <img src="~/grubhub_logo.png" alt="grubhub_logo" width="100" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item @if (ViewContext.RouteData.Values["controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Index") {
+                    <text>active</text>
+ }">
+                        <a class="nav-link" href="@Url.Action("Index", Model.User.Roles, Model.User)">Home</a>
+                    </li>
+                    <li class="nav-item @if (ViewData["Controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Profile") {
+                    <text>active</text>
+ }">
+                        <a class="nav-link" href="@Url.Action("Profile", Model.User.Roles, new {id = Model.User.Id})">Profile</a>
+                    </li>
+                </ul>
+            </div>
+            <form method="POST" asp-action="Logout" asp-controller="Grabber">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    </div>
+
     <h1 class="text-xl-center">Grabber Home</h1> 
+    <h2 class="text-secondary"> Welcome,  @Model.User.Username let's post to receive an order</h2>
     <div class="post-cards">
         <div class="card-container">
             <button id="post-button">Create Post</button>
@@ -95,7 +121,7 @@
                     <form method="post" asp-action="deletePost" asp-controller="Grabber">
                         <input type="hidden" name="postId" value="@post.PostId" />
                         <button id="delete" name="delete button" type="submit" onclick="return confirm('Are you sure you want to delete this post?');">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <img src="~/grabber/svg/trashcan.svg" style="width: 5%;"/>
                         </button>
                     </form>
                     <div class="card-body">

@@ -13,12 +13,46 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-    <form method="POST" asp-action="Logout" asp-controller="Grabber">
-        <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
+    @{
+        ViewData["Controller"] = "Customer";
+    }
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Customer", Model.User)">
+                <img src="~/grubhub_logo.png" alt="grubhub_logo" width="100" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item @if (ViewContext.RouteData.Values["controller"].ToString() == "Customer" && ViewContext.RouteData.Values["action"].ToString() == "Index") {
+                    <text>active</text>
+ }">
+                        <a class="nav-link" href="@Url.Action("Index", "Customer", Model.User)">Home</a>
+                    </li>
+                    <li class="nav-item @if (ViewData["Controller"].ToString() == "Customer" && ViewContext.RouteData.Values["action"].ToString() == "Profile") {
+                    <text>active</text>
+ }">
+                        <a class="nav-link" href="@Url.Action("Profile", "Customer", new {id = Model.User.Id})">Profile</a>
+                    </li>
+                </ul>
+            </div>
+            <form method="POST" asp-action="Logout" asp-controller="Grabber">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    
     <h1 class="text-xl-center">Customer Home</h1>
-    <h2 class="text-secondary">Hello. Welcome @Model.User.Username</h2>
-   
+    <h2 class="text-secondary">Hello. Welcome, @Model.User.Username Let's order something to eat</h2>
+    @if (Model.Posts == null || !Model.Posts.Any())
+    {
+    <p>There are no posts to show. Please try again later.</p>
+    }
+    else
+    {
     @foreach (var post in Model.Posts)
     {
         <div class="card">
@@ -81,7 +115,8 @@
         }
         <hr />
     }
-
+    }
     <script src="~/customer/customer-form.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
