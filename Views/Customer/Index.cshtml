@@ -62,7 +62,7 @@
                 <p>Max item per orderl: @post.MaxQuantity</p>
                 <p>Max Price per order: @post.MaxTotalPrice</p>
                 <p>Close Time: @(post.CloseTime == DateTime.MaxValue ? "Close manually" : post.CloseTime.ToString())</p>
-                <button onclick="toggleForm('@post.PostId')">Request an Order</button>
+                    <button onclick="toggleForm('@post.PostId')" class="btn btn-primary">Request an Order</button>
                 <p></p>
                 <div id="order-form-@post.PostId" style="display: none;">
                         <form method="post" asp-action="Index" asp-controller="Customer">
@@ -89,7 +89,7 @@
                             <label for="notes-@post.PostId">Note:</label>
                             <textarea name="notes" id="notes-@post.PostId" class="form-control"></textarea>
                         </div>
-                        <button type="submit" onclick="validateForm(@post.MaxQuantity, @post.MaxTotalPrice, @post.PostId)">Send Order</button>
+                        <button type="submit" class="btn btn-success" onclick="validateForm(@post.MaxQuantity, @post.MaxTotalPrice, @post.PostId)">Send Order</button>
                     </form>
                 </div>
             </div>
