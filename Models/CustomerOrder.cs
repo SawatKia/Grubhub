@@ -27,7 +27,11 @@ namespace Grubhub.Models
             public string PickupPlace { get; set; }
             [AllowNull]
             public string? Notes { get; set; }
-        
+
+            [Required]
+            public string CustomerName { get; set; }
+
+
 
     }
 }
