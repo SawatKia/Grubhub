@@ -15,53 +15,59 @@
     <title>Grabber Home</title>
 </head>
 <body>
-<div class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="@Url.Action("Index", Model.Roles, Model)">
-            <img src="~/grubhub_logo.png" alt="grubhub_logo" width="100" />
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item @if (ViewContext.RouteData.Values["controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Index") {
-                        <text>active</text>
-     }">
-                            <a class="nav-link" href="@Url.Action("Index", Model.Roles, Model)">Home</a>
-                        </li>
-                <li class="nav-item @if (ViewData["Controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Profile") {
-                        <text>active</text>
-     }">
-                            <a class="nav-link" href="@Url.Action("Profile", Model.Roles, new {id = Model.Id})">Profile</a>
-                        </li>
-            </ul>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", Model.Roles, Model)">
+                <img src="~/grubhub_logo.png" alt="grubhub_logo" width="100" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item @if (ViewContext.RouteData.Values["controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Index") {
+                            <text>active</text>
+         }">
+                                <a class="nav-link" href="@Url.Action("Index", Model.Roles, Model)">Home</a>
+                            </li>
+                    <li class="nav-item @if (ViewData["Controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Profile") {
+                            <text>active</text>
+         }">
+                                <a class="nav-link" href="@Url.Action("Profile", Model.Roles, new {id = Model.Id})">Profile</a>
+                            </li>
+                </ul>
+            </div>
+            <form method="POST" asp-action="Logout" asp-controller="Grabber">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
         </div>
-        <form method="POST" asp-action="Logout" asp-controller="Grabber">
-            <button type="submit" class="btn btn-danger">Logout</button>
-        </form>
     </div>
-</div>
-<h2>Profile</h2>
+    <h2>Profile</h2>
 
-<form asp-controller="Customer" asp-action="Profile" method="post">
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" name="Username" value="@Model.Username" required>
-    </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required>
-    </div>
-    <div class="form-group">
-        <label for="roles">Roles</label>
-        <select class="form-control" id="roles" name="Roles">
-            <option value="Grabber">Grabber</option>
-            <option value="Customer">Customer</option>
-        </select>
+    <form asp-controller="Customer" asp-action="Profile" method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="Username" value="@Model.Username" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required>
+        </div>
+        <div class="form-group">
+            <label for="roles">Roles</label>
+            <select class="form-control" id="roles" name="Roles">
+                <option value="Grabber">Grabber</option>
+                <option value="Customer">Customer</option>
+            </select>
 
-    </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-</form>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>
 </html>
