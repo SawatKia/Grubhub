@@ -30,6 +30,17 @@ namespace Grubhub.Controllers
                 _db.SaveChanges();
             }
             var posts = _db.GrabberPostingField.ToList();
+            var currentTime = DateTime.Now;
+            foreach (var post in posts)
+            {
+                if (post.CloseTime != null && currentTime >= post.CloseTime)
+                {
+                    // Post has expired, remove it from the database
+                    _db.GrabberPostingField.Remove(post);
+                    _db.SaveChanges();
+                }
+            }
+            posts = _db.GrabberPostingField.ToList();
             var user_order = _db.CustomerOrders.ToList();
             var viewModel = new UserPostsViewModel
             {
@@ -102,7 +113,5 @@ namespace Grubhub.Controllers
             ViewData["Controller"] = existingUser.Roles;    
             return RedirectToAction("Index",existingUser.Roles,existingUser); // Redirect to the profile page
         }
-
-
     }
 }

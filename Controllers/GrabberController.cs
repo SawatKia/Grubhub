@@ -109,7 +109,7 @@ namespace Grubhub.Controllers
                 _db.GrabberPostingField.Remove(post);
             }
             _db.SaveChanges();
-            
+            ViewData["Controller"] = "Grabber";
             var posts = _db.GrabberPostingField.ToList();
             return RedirectToAction("Index", "Grabber", posts);
         }
