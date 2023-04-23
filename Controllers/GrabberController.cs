@@ -23,7 +23,19 @@ namespace Grubhub.Controllers
 				.Where(p => p.UserId == userId)
 				.ToList();
             var user_order = _db.CustomerOrders.ToList();
-
+            var currentTime = DateTime.Now;
+            foreach (var post in posts)
+            {
+                if (post.CloseTime != null && currentTime > post.CloseTime)
+                {
+                    // Post has expired, remove it from the database
+                    _db.GrabberPostingField.Remove(post);
+                    _db.SaveChanges();
+                }
+            }
+            posts = _db.GrabberPostingField
+                .Where(p => p.UserId == userId)
+                .ToList();
             var viewModel = new UserPostsViewModel
 			{
                 CustomerOrders = user_order,
@@ -75,6 +87,7 @@ namespace Grubhub.Controllers
                 User = userData,
                 Posts = posts
             };
+            ViewData["Controller"] = userData.Roles;
             return View(viewModel);
         }
         public IActionResult Logout()
@@ -121,7 +134,15 @@ namespace Grubhub.Controllers
             {
                 return NotFound();
             }
-            existingUser.Roles = Updateduser.Roles; // Update the roles
+            if (existingUser.Roles != Updateduser.Roles) {
+                existingUser.Roles = Updateduser.Roles; // Update the roles
+                var posts = _db.GrabberPostingField.Where(p => p.UserId == Updateduser.Id).ToList();
+                if (posts.Count > 0)
+                {
+                    _db.GrabberPostingField.RemoveRange(posts);
+                }
+
+            }
             _db.SaveChanges(); // Save changes to the database
             ViewData["Controller"] = existingUser.Roles;
             return RedirectToAction("Index", existingUser.Roles, existingUser); // Redirect to the profile page
