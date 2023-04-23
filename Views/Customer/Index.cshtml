@@ -59,14 +59,14 @@
             <div class="card-body">
                 <p>Grabber Username: @post.GrabberName</p>
                 <p>Canteen Name: @post.CanteenName</p>
-                <p>Max Quantity: @post.MaxQuantity</p>
-                <p>Max Price: @post.MaxTotalPrice</p>
+                <p>Max item per orderl: @post.MaxQuantity</p>
+                <p>Max Price per order: @post.MaxTotalPrice</p>
                 <p>Close Time: @(post.CloseTime == DateTime.MaxValue ? "Close manually" : post.CloseTime.ToString())</p>
                 <button onclick="toggleForm('@post.PostId')">Request an Order</button>
                 <p></p>
                 <div id="order-form-@post.PostId" style="display: none;">
                         <form method="post" asp-action="Index" asp-controller="Customer">
-
+                        <input type="hidden" name="CustomerName" value="@Model.User.Username"/>
                         <input type="hidden" name="CustomerId" value="@Model.User.Id" />
                         <input type="hidden" name="PostId" value="@post.PostId" />
                         <div class="form-group">
@@ -74,7 +74,7 @@
                             <input type="text" name="foodName" id="foodName-@post.PostId" class="form-control" required placeholder="ข้าวไก่ทอดเทคโน"/>
                         </div>
                         <div class="form-group">
-                            <label for="numBoxes-@post.PostId">Number of Boxes:</label>
+                            <label for="numBoxes-@post.PostId">Number of items:</label>
                             <input type="number" name="numBoxes" id="numBoxes-@post.PostId" class="form-control" required placeholder="2"/>
                         </div>
                         <div class="form-group">
