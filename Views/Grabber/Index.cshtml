@@ -57,7 +57,7 @@
  }">
                         <a class="nav-link" href="@Url.Action("Index", Model.User.Roles, Model.User)">Home</a>
                     </li>
-                    <li class="nav-item @if (ViewData["Controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Profile") {
+                    <li class="nav-item @if (ViewContext.RouteData.Values["controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Profile") {
                     <text>active</text>
  }">
                         <a class="nav-link" href="@Url.Action("Profile", Model.User.Roles, new {id = Model.User.Id})">Profile</a>
@@ -89,11 +89,11 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="MaxQuantity" class="form-label">Max Quantity:</label>
+                        <label for="MaxQuantity" class="form-label">Max Item per order:</label>
                         <input type="number" id="MaxQuantity" name="MaxQuantity" required min="1" step="1" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label for="MaxPrice" class="form-label">Max Price(Total):</label>
+                        <label for="MaxPrice" class="form-label">Max Price per order:</label>
                         <input type="number" id="MaxTotalPrice" name="MaxTotalPrice" required min="1" step="any" class="form-control">
                     </div>
                     <div class="mb-3">
@@ -136,6 +136,7 @@
                         {
                             <div class="card">
                                 <div class="card-body">
+                                    <p>Username : @order.CustomerName</p>
                                     <p>Food Name: @order.FoodName</p>
                                     <p>Number of Boxes: @order.NumBoxes</p>
                                     <p>Estimated Total Price: @order.EstimatedTotalPrice</p>
