@@ -29,19 +29,31 @@ namespace Grubhub.Controllers
                 _db.GrabberPostingField.RemoveRange(postsToRemove);
                 _db.SaveChanges();
             }
+            // Remove any expired posts from GrabberPostingField table
             var posts = _db.GrabberPostingField.ToList();
             var currentTime = DateTime.Now;
+            //var expiredPosts = _db.GrabberPostingField.Where(pf => pf.CloseTime != null && currentTime >= pf.CloseTime);
             foreach (var post in posts)
             {
                 if (post.CloseTime != null && currentTime >= post.CloseTime)
                 {
-                    //// Post has expired, remove it from the database
-                    //_db.GrabberPostingField.Remove(post);
-                    //_db.SaveChanges();
-                    RedirectToAction("deletePost", "Grabber", post.PostId);
+                    // Post has expired, remove it from the database
+                    _db.GrabberPostingField.Remove(post);
+                    _db.SaveChanges();
+                    //RedirectToAction("deletePost", "Grabber", post.PostId);
                 }
             }
-            //make it delete the orders that doesn't connect with any exisiting posts[chatGPT] 
+            //make it delete the orders that its PostId doesn't connect to any exisiting posts(PostId)
+            // Retrieve the list of valid PostId values from GrabberPostingField table
+            var validPostIds = _db.GrabberPostingField.Select(pf => pf.PostId).ToList();
+
+            // Retrieve the list of CustomerOrders that have invalid PostId values and remove them
+            var invalidOrders = _db.CustomerOrders.Where(co => !validPostIds.Contains(co.PostId));
+            if (invalidOrders.Any())
+            {
+                _db.CustomerOrders.RemoveRange(invalidOrders);
+                _db.SaveChanges();
+            }
             posts = _db.GrabberPostingField.ToList();
             var user_order = _db.CustomerOrders.ToList();
             var viewModel = new UserPostsViewModel
