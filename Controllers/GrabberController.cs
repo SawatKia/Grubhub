@@ -98,6 +98,12 @@ namespace Grubhub.Controllers
         [HttpPost]
         public IActionResult deletePost(int postID)
         {
+            // Find the UserId associated with the given PostId
+            var userId = _db.GrabberPostingField
+                .Where(p => p.PostId == postID)
+                .Select(p => p.UserId)
+                .FirstOrDefault();
+            var user = _db.UsersData.FirstOrDefault(o => o.Id == userId);
             var postsToDelete = _db.GrabberPostingField.Where(p => p.PostId == postID);
             var orderToDelete = _db.CustomerOrders.Where(o => o.PostId == postID);
             foreach (var order in orderToDelete)
@@ -111,7 +117,7 @@ namespace Grubhub.Controllers
             _db.SaveChanges();
             ViewData["Controller"] = "Grabber";
             var posts = _db.GrabberPostingField.ToList();
-            return RedirectToAction("Index", "Grabber", posts);
+            return RedirectToAction("Index", "Grabber", user);
         }
         [HttpGet]
         public IActionResult Profile(int Id)

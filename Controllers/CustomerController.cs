@@ -56,18 +56,19 @@ namespace Grubhub.Controllers
         public IActionResult Index(CustomerOrder order)
         {
             var post = _db.GrabberPostingField.FirstOrDefault(p => p.PostId == order.PostId);
+            var Errorcount = 0;
 
             if (order.NumBoxes > post.MaxQuantity)
             {
-                ModelState.AddModelError("NumBoxes", "Number of boxes cannot exceed " + post.MaxQuantity + ".");
+                Errorcount += 1;
             }
 
             if (order.EstimatedTotalPrice > Convert.ToDecimal(post.MaxTotalPrice))
             {
-                ModelState.AddModelError("EstimatedTotalPrice", "Estimated total price cannot exceed " + post.MaxTotalPrice + ".");
+                Errorcount += 1;
             }
 
-            if (!ModelState.IsValid)
+            if (Errorcount > 0)
             {
                 var posts = _db.GrabberPostingField.ToList();
                 var user_order = _db.CustomerOrders.ToList();
