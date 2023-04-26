@@ -35,11 +35,13 @@ namespace Grubhub.Controllers
             {
                 if (post.CloseTime != null && currentTime >= post.CloseTime)
                 {
-                    // Post has expired, remove it from the database
-                    _db.GrabberPostingField.Remove(post);
-                    _db.SaveChanges();
+                    //// Post has expired, remove it from the database
+                    //_db.GrabberPostingField.Remove(post);
+                    //_db.SaveChanges();
+                    RedirectToAction("deletePost", "Grabber", post.PostId);
                 }
             }
+            //make it delete the orders that doesn't connect with any exisiting posts[chatGPT] 
             posts = _db.GrabberPostingField.ToList();
             var user_order = _db.CustomerOrders.ToList();
             var viewModel = new UserPostsViewModel
@@ -57,6 +59,7 @@ namespace Grubhub.Controllers
         {
             var post = _db.GrabberPostingField.FirstOrDefault(p => p.PostId == order.PostId);
             var Errorcount = 0;
+            var user_obj = _db.UsersData.FirstOrDefault(o => o.Id == order.CustomerId);
 
             if (order.NumBoxes > post.MaxQuantity)
             {
@@ -72,7 +75,7 @@ namespace Grubhub.Controllers
             {
                 var posts = _db.GrabberPostingField.ToList();
                 var user_order = _db.CustomerOrders.ToList();
-                var user_obj = _db.UsersData.FirstOrDefault(o => o.Id == order.CustomerId);
+                
 
                 var viewModel = new UserPostsViewModel
                 {
@@ -88,7 +91,7 @@ namespace Grubhub.Controllers
             _db.SaveChanges();
             //show comment
             
-            return RedirectToAction("Index");
+            return RedirectToAction("Index",user_obj);
         }
         public IActionResult Profile(int Id)
         {
