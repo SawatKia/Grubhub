@@ -1,0 +1,215 @@
+@using Grubhub.Controllers;
+@model UserPostsViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/64d58efce2.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="#" rel="stylesheet" />
+    <style>
+        .post-cards h2 {
+            font-size: 24px;
+            margin: 0 0 10px;
+        }
+        .container {
+            display: flex;
+            padding: 10px;
+        
+        }
+        .container button {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card-container button {
+            width: 200px;
+            height: 50px;
+            margin: 0 auto;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            color: rgb(243, 243, 243);
+            background-color: rgb(5, 30, 170);
+            font-size: 20px;
+        }
+      .card-body button  {
+            width: 100px;
+            height: 40px;
+            margin: 0 auto;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            color: rgb(243, 243, 243);
+            background-color: rgb(5, 30, 170);
+      }
+      body {
+            background-color: rgb(168, 238, 245);
+            background-image: url('https://i.pinimg.com/736x/91/37/a1/9137a17d0cbc2f856b2f30ac5f9f3599--food-patterns-food-illustrations.jpg');
+      }
+            
+      h1 {
+            color: rgb(12, 70, 196);
+            margin: 0 auto;
+            display:flex;
+            justify-content:center;
+            background-color: rgb(196, 226, 252);
+            padding: 10px;
+            border: 4px solid #1387cab0;
+            border-radius: 20px;
+            margin-top: 30px;
+      }
+      h2 {
+            color: rgb(9, 33, 167);
+            margin: 0 auto;
+            display:flex;
+            justify-content:center;
+            margin-top: 10px;
+      }
+      .card-body  {
+            background-color: #3a81ebb0;
+            padding: 10px;
+            color:rgb(11, 4, 122);
+            display: block;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+      }
+  
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <title>Grabber Home</title>
+</head>
+<body>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", Model.User.Roles, Model.User)">
+                <img src="~/grubhub_logo.png" alt="grubhub_logo" width="100" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item @if (ViewContext.RouteData.Values["controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Index") {
+                    <text>active</text>
+ }">
+                        <a class="nav-link" href="@Url.Action("Index", Model.User.Roles, Model.User)">Home</a>
+                    </li>
+                    <li class="nav-item @if (ViewContext.RouteData.Values["controller"].ToString() == "Grabber" && ViewContext.RouteData.Values["action"].ToString() == "Profile") {
+                    <text>active</text>
+ }">
+                        <a class="nav-link" href="@Url.Action("Profile", Model.User.Roles, new {id = Model.User.Id})">Profile</a>
+                    </li>
+                </ul>
+            </div>
+            <form method="POST" asp-action="Logout" asp-controller="Grabber">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <h1 class="text-xl-center">Grabber Home</h1> 
+    <h2 class="text-secondary"> Welcome,  @Model.User.Username let's post to receive an order</h2>
+    <div class="post-cards">
+        <div class="card-container">
+            <button id="post-button" class="btn btn-primary">Create Post</button>
+            <div id="post-form" style="display: none;">
+                <form method="POST" asp-action="Index" asp-controller="Grabber" class="needs-validation">
+                    <div class="mb-3">
+                        <label for="CanteenName" class="form-label">Canteen Name:</label>
+                        <select id="CanteenName" name="CanteenName" required class="form-select">
+                            <option value="">-- Select canteen --</option>
+                            <option value="โรงอาหารพระเทพ">โรงอาหารพระเทพ</option>
+                            <option value="โรง A">โรง A</option>
+                            <option value="โรง C">โรง C</option>
+                            <option value="โรง J">โรง J</option>
+                            <option value="โรงอาหารคณะวิทย์">โรงอาหารคณะวิทย์</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="MaxQuantity" class="form-label">Max Item per order:</label>
+                        <input type="number" id="MaxQuantity" name="MaxQuantity" required min="1" step="1" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="MaxPrice" class="form-label">Max Price per order:</label>
+                        <input type="number" id="MaxTotalPrice" name="MaxTotalPrice" required min="1" step="any" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="CloseTime" class="form-label">Close Time:</label>
+                        <input type="datetime-local" id="CloseTime" name="CloseTime" class="form-control">
+                        <div class="form-check">
+                            <input type="checkbox" id="CloseOption" name="CloseOption" class="form-check-input" checked>
+                            <label for="CloseOption" class="form-check-label">Close by Manually</label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="UserId" name="UserId" value="@Model.User.Id" />
+                    <input type="hidden" id="GrabberName" name="GrabberName" value="@Model.User.Username"/>
+                    <button type="submit" class="btn btn-primary">Submit the Post</button>
+                    
+                </form>
+                
+            </div>
+            @if (TempData["Posting_Error"] != null)
+            {
+                <div style="color:red;">@TempData["Posting_Error"]</div>
+            }
+            @foreach (var post in Model.Posts)
+            {
+                <div class="card">
+                    <form method="post" asp-action="deletePost" asp-controller="Grabber">
+                        <input type="hidden" name="postId" value="@post.PostId" />
+                        <button id="delete" name="delete button" class="btn btn-warning" type="submit" onclick="return confirm('Are you sure you want to delete this post?');">
+                            <img src="~/grabber/svg/trashcan.svg" style="width: 20%;"/>
+                        </button>
+                    </form>
+                    <div class="card-body">
+                        <p>Canteen Name: @post.CanteenName</p>
+                        <p>Max Quantity: @post.MaxQuantity</p>
+                        <p>Max Price: @post.MaxTotalPrice</p>
+                        <p>Close Time: @(post.CloseTime == DateTime.MaxValue ? "Close manually" : post.CloseTime.ToString())</p>
+                    </div>
+                    @foreach (var order in Model.CustomerOrders)
+                    {
+                        @if (order.PostId == post.PostId)
+                        {
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>Username : @order.CustomerName</p>
+                                    <p>Food Name: @order.FoodName</p>
+                                    <p>Number of Boxes: @order.NumBoxes</p>
+                                    <p>Estimated Total Price: @order.EstimatedTotalPrice</p>
+                                    <p>Pickup Place: @order.PickupPlace</p>
+                                    @if (!string.IsNullOrEmpty(order.Notes))
+                                    {
+                                        <p>Notes: @order.Notes</p>
+                                    }
+                                    <hr />
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+        
+    </div>
+
+    
+    <script src="~/grabber/js/grabber-post-form.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+   
+</body>
+</html>
